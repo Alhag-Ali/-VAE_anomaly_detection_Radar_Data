@@ -1,0 +1,6 @@
+L: 10
+image_size: 128
+input_channels: 1
+latent_size: 32
+log_steps: 1000
+lr: 0.001

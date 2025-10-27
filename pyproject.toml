@@ -1,0 +1,107 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "vae_anomaly_detection"
+version = "2.0.1"
+requires-python = ">3.6,<3.12"
+description = "Pytorch/TF1 implementation of Variational AutoEncoder for anomaly detection following the paper \"Variational Autoencoder based Anomaly Detection using Reconstruction Probability by Jinwon An, Sungzoon Cho\""
+authors = [{name="Michele De Vita", email="mik3dev@gmail.com"}]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+    ]
+keywords = ["vae", "anomaly detection", "deep learning", "pytorch"]
+license = {text = "MIT"}
+readme = "readme.md"
+
+dependencies = [
+"path>=15.0",
+"torch>=1.8",
+"pytorch-lightning>=1.9",
+"PyYAML>=5.0",
+"tqdm>=4.0",
+"tensorboard>=0.20",
+"numpy>= 1.18",
+]
+
+[project.urls]
+homepage = "https://github.com/Michedev/VAE_anomaly_detection"
+repository = "https://github.com/Michedev/VAE_anomaly_detection"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.hatch.envs.default]
+python = "3.10"
+dependencies = [
+    "torch>=1.8",
+    "pytorch-lightning",
+    "path",
+    "tensorboard",
+    "numpy",
+    "torchvision",
+]
+
+[tool.hatch.envs.default.scripts]
+train = "python train.py -i 100 -l 32 {args:train}"
+
+
+[tool.hatch.envs.cpu]
+python = "3.10"
+dependencies = [
+    "torch>=1.8",
+    "pytorch-lightning",
+    "path",
+    "tensorboard",
+    "numpy",
+    "torchvision",
+]
+
+[tool.hatch.envs.cpu.env-vars]
+PIP_EXTRA_INDEX_URL = "https://download.pytorch.org/whl/cpu"
+
+
+[tool.hatch.envs.cpu.scripts]
+train = "python train.py {args}"
+
+
+[tool.hatch.envs.test]
+python = "python3"
+dependencies = [
+    "torch>=1.8",
+    "pytorch-lightning",
+    "path",
+    "tensorboard",
+    "numpy",
+    "torchvision",
+    "pytest",
+]
+
+[tool.hatch.envs.test.overrides]
+matrix.foo.set-python = ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+
+
+[tool.hatch.envs.test.env-vars]
+PIP_EXTRA_INDEX_URL = "https://download.pytorch.org/whl/cpu"
+
+
+[tool.hatch.build]
+include = ["vae_anomaly_detection"]

@@ -1,0 +1,5 @@
+L: 10
+input_size: 784
+latent_size: 32
+log_steps: 1000
+lr: 0.001
