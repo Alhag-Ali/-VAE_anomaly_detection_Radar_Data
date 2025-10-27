@@ -61,38 +61,41 @@ This version contains the model and the training procedure
 Subclass ```VAEAnomalyDetection``` and define your encoder and decoder like in ```VaeAnomalyTabular```
 
 ```python
-class VAEAnomalyTabular(VAEAnomalyDetection):
-
-    def make_encoder(self, input_size, latent_size):
-        """
-        Simple encoder for tabular data.
-        If you want to feed image to a VAE make another encoder function with Conv2d instead of Linear layers.
-        :param input_size: number of input variables
-        :param latent_size: number of output variables i.e. the size of the latent space since it's the encoder of a VAE
-        :return: The untrained encoder model
-        """
+    def make_encoder(self, input_channels: int, latent_size: int, image_size: int):
+        # Convolutional Encoder architecture
+        final_spatial_dim = image_size // (2**4) # = 8 for image_size=128
+        final_conv_output_channels = 128 # Output channels for the last conv layer before flattening
+        
         return nn.Sequential(
-            nn.Linear(input_size, 500),
+            # Input: (batch_size, input_channels, image_size, image_size) e.g., (B, 1, 128, 128)
+            nn.Conv2d(input_channels, 16, kernel_size=4, stride=2, padding=1),
             nn.ReLU(),
-            nn.Linear(500, 200),
+            nn.Conv2d(16, 32, kernel_size=4, stride=2, padding=1),
             nn.ReLU(),
-            nn.Linear(200, latent_size * 2)
-            # times 2 because this is the concatenated vector of latent mean and variance
+            nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(64, final_conv_output_channels, kernel_size=4, stride=2, padding=1),
+            nn.ReLU(),
+            nn.Flatten(), # -> (B, 128*8*8) = (B, 8192)
+            nn.Linear(final_conv_output_channels * final_spatial_dim * final_spatial_dim, latent_size * 2)
         )
 
-    def make_decoder(self, latent_size, output_size):
-        """
-        Simple decoder for tabular data.
-        :param latent_size: size of input latent space
-        :param output_size: number of output parameters. Must have the same value of input_size
-        :return: the untrained decoder
-        """
+    def make_decoder(self, latent_size: int, output_channels: int, image_size: int):
+        # Convolutional Decoder architecture
+        final_spatial_dim = image_size // (2**4) # = 8 for image_size=128
+        final_conv_output_channels = 128
+        
         return nn.Sequential(
-            nn.Linear(latent_size, 200),
+            nn.Linear(latent_size, final_conv_output_channels * final_spatial_dim * final_spatial_dim),
             nn.ReLU(),
-            nn.Linear(200, 500),
+            nn.Unflatten(1, (final_conv_output_channels, final_spatial_dim, final_spatial_dim)),
+            nn.ConvTranspose2d(final_conv_output_channels, 64, kernel_size=4, stride=2, padding=1),
             nn.ReLU(),
-            nn.Linear(500, output_size * 2)  # times 2 because this is the concatenated vector of reconstructed mean and variance
+            nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),
+            nn.ReLU(),
+            nn.ConvTranspose2d(32, 16, kernel_size=4, stride=2, padding=1),
+            nn.ReLU(),
+            nn.ConvTranspose2d(16, output_channels * 2, kernel_size=4, stride=2, padding=1)
         )
 ```
 
