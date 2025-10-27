@@ -9,6 +9,7 @@ Pytorch/TF1 implementation of Variational AutoEncoder for anomaly detection foll
  [Variational Autoencoder based Anomaly Detection using Reconstruction Probability by Jinwon An, Sungzoon Cho](https://www.semanticscholar.org/paper/Variational-Autoencoder-based-Anomaly-Detection-An-Cho/061146b1d7938d7a8dae70e3531a00fceb3c78e8)
  <br>
 
+The Repository based on https://github.com/Michedev 
 ## How to install
 
 #### Python package way
