@@ -18,7 +18,7 @@ import numpy as np
 import seaborn as sns
 
 #load X_test
-data_dir_test = r"D:\\Master\\3_Semester\\ML_Praktikum\\Project\\VAE_anomaly_detection\\radar_dataset\\6_February_2019_NG_Homes_Dataset\\6P08A06R1_0_doppler_mti.png"
+data_dir_test = r"Link\to\testdataset"
 
 def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.cm.Blues):
     """
